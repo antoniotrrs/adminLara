@@ -36,3 +36,8 @@ Route::get('/deleactiv/{id}', 'actividadesController@deletActividad');
 Route::get('/biblioteca', 'bibliotecaController@obtenerLibrosActivos');
 Route::post('/biblioteca','bibliotecaController@nuevoLibro');
 Route::get('/deletBook/{id}', 'bibliotecaController@deletLibro');
+
+Route::post('/createUser', 'userController@create');
+Route::post('/editUser','userController@update');
+Route::post('/usuarios','userController@getUsers');
+Route::post('/getuser','userController@showUser');
