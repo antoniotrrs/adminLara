@@ -7,6 +7,7 @@ use App\eventosModel;
 use DB;
 use App\pushNotification;
 
+
 class eventosController extends Controller
 {
     //
@@ -63,8 +64,10 @@ public function showhome(){
 }
 
     public function showallEvents(){
+
+
       $events = DB::select('select * from eventos where activo = 1');
-      return View('welcome',compact('events'));
+      return View('welcome',['events'=>$events]);
     }
 
 

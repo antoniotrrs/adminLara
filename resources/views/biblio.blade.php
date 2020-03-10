@@ -1,176 +1,173 @@
-<!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<!DOCTYPE html>
+<!--
+This is a starter template page. Use this page to start your new project from
+scratch. This page gets rid of all links and provides the needed markup only.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+  <title>Administrador | COMEFAENL</title>
 
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                font-family: 'Nunito', sans-serif;
-                font-weight: 200;
-                height: 100vh;
-                margin: 0;
-            }
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="{{url('/dashboard/plugins/fontawesome-free/css/all.min.css')}}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{{url('/dashboard/dist/css/adminlte.min.css')}}">
+  <!-- Google Font: Source Sans Pro -->
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
 
-            input, textarea {
-              font-size: 13px;
-            }
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
+      </li>
 
+    </ul>
 
-            .menuLeft{
+  </nav>
+  <!-- /.navbar -->
 
-              color: white;
-              font-weight: bold;
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    @yield('sidebar',View::make('sidebar'));
+  </aside>
 
-            }
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">Sesiones</h1>
+          </div><!-- /.col -->
 
-            .menuLeft ul{
-              margin: 0px;
-            }
-            .menuLeft ul li{
-              margin-top: 40px;
-              list-style: none;
-              cursor: pointer;
-            }
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
 
-            .RightSpace {
+    <!-- Main content -->
+    <div class="content">
+      <div class="container-fluid">
+        <div class="row">
 
-              box-sizing: border-box;
-            }
-
-            textarea {
-              resize: none;
-            }
-
-            .tituloSecc {
-              font-weight: bold;
-              color: #2a5263;
-              font-size: 30px;
-              border-bottom: 1px solid #2a5263;
-            }
-
-            .subtitle {
-              font-weight: bold;
-              font-size: 15px;
-              margin-bottom: 10px;
-            }
-
-            table {
-              border-collapse: collapse;
-            }
-            table th, .resultados td {
-              padding: 0px 10px;
-              width: 150px;
-            }
-            .greenButton {
-              width: 80px;
-              height: 35px;
-              color: white;
-              background: #209057;
-              border: none;
-              font-size: 13px;
-            }
-            .redButton {
-              padding: 10px;
-              color: white;
-              background: #f14b4b;
-              border: none;
-              font-size: 13px;
-            }
-            .menuLeft a,.menuLeft a:hover, .menuLeft a:focus, .menuLeft a:active {
-                color: white;
-                text-decoration: none;
-              }
-
-        </style>
-    </head>
-    <body>
-
-      <div class="row" style="background: #9c9c9c; ">
-              <div class="col-lg-2 menuLeft" >
-                <ul>
-                  <li><a href="{{ url('/') }}">Eventos</a></li>
-                  <li><a href="{{ url('/sesiones') }}">Sesiones</a></li>
-                  <li><a href="{{ url('/actividades') }}">Actividades academicas</a></li>
-                  <li><a href="{{url('/biblioteca')}}">Biblioteca</a></li>
-                  <li><a href="{{ url('/home') }}">Cerrar Sesión</a></li>
-                </ul>
+          <!-- /.col-md-6 -->
+          <div class="col-md-3">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="m-0">Nueva Sesión</h5>
               </div>
-              <div class="col-lg-10" style="background: white;">
+              <div class="card-body">
+                <form action="{{url('/api/biblioteca')}}" method="post">
+                  <div class="form-group">
+                    <textarea class="form-control" rows="3" name="titulo" placeholder="Título"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <textarea class="form-control" rows="3" name="autor" placeholder="Autor"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <input type="text" class="form-control" name="link" placeholder="Url video">
+                  </div>
+                <div class="form-group">
+                  <textarea class="form-control" rows="3" name="detalle" placeholder="Detalle"></textarea>
+                </div>
 
-                <div class="row">
-                  <div class="col-lg-12">
-                      <label class="tituloSecc">Biblioteca</label>
+
+
+
+                <input type="submit" name="" value="Crear" class="btn btn-info float-right">
+              </form>
+              </div>
+            </div>
+          </div>
+          <!-- /.col-md-3 -->
+
+          <div class="col-lg-9">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Eventos Actuales</h3>
+
+                <div class="card-tools">
+                  <div class="input-group input-group-sm" style="width: 150px;">
+                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                    <div class="input-group-append">
+                      <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                    </div>
                   </div>
                 </div>
-            <div class="row">
-              <div class="col-lg-12">
-                <div class="subtitle">Agregar Libro</div>
               </div>
-            </div>
-
-            <div class="row">
-              <div class="col-lg-12">
-                <table border="1">
-                  <tr>
-                    <th>Titulo</th>
-                    <th>Autor</th>
-                    <th>Link</th>
-                    <th>Detalle</th>
-
-                  </tr>
-                  <tr>
-                    <form action="{{url('/api/biblioteca')}}" method="post">
-                      <td><textarea name="titulo" rows="4" cols="20"></textarea></td>
-                      <td><textarea name="autor" rows="4" cols="20"></textarea> </td>
-                      <td><textarea name="link" rows="4" cols="20"></textarea></td>
-                      <td><textarea name="detalle" rows="4" cols="20"></textarea></td>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0" style="height: 450px;">
+                <table class="table table-head-fixed text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>Titulo</th>
+                      <th>Autor</th>
+                      <th>Link</th>
+                      <th>Detalle</th>
 
 
-                      <td><input type="submit" name="" value="Crear" class="greenButton"></td>
-                    </form>
-                  </tr>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach($biblio as $sesion)
+                    <tr style="height:60px;">
+                        <td><p class="text-wrap" style="width:300px">{{$sesion->titulo}}</p></td>
+                        <td><p class="text-wrap" style="width:300px">{{$sesion->autor}}</p></td>
+                        <td><a href="{{$sesion->link}}" target="_blank">{{$sesion->link}}</a></td>
+                        <td>{{$sesion->detalle}}</td>
+                        <td style="text-align: center;"> <a href="{{ url('/api/deletBook/'.$sesion->id) }}" class="btn btn-danger">Eliminar</a> </td>
+
+                    </tr>
+                    @endforeach
+                  </tbody>
                 </table>
               </div>
+              <!-- /.card-body -->
             </div>
+            <!-- /.card -->
+          </div>
 
 
-                <br>
-                <br>
-                <div class="subtitle">Libros Actuales</div>
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
 
-                <table border="1" class="resultados">
-                  <tr>
-                    <th>Titulo</th>
-                    <th>Autor</th>
-                    <th>Link</th>
-                    <th>Detalle</th>
+  <!-- Main Footer -->
+  <footer class="main-footer">
+    <!-- To the right -->
+    <div class="float-right d-none d-sm-inline">
+      version 2.0
+    </div>
+    <!-- Default to the left -->
+    <strong>Powered by <a href="https://www.bats.com.mx">BATS</a>.</strong> All rights reserved.
+  </footer>
+</div>
+<!-- ./wrapper -->
 
 
 
-                  </tr>
-                  @foreach($biblio as $sesion)
-                  <tr style="height:60px;">
-                      <td>{{$sesion->titulo}}</td>
-                      <td>{{$sesion->autor}}</td>
-                      <td><a href="{{$sesion->link}}" target="_blank">{{$sesion->link}}</a></td>
-                      <td>{{$sesion->detalle}}</td>
-                      <td style="text-align: center;"> <a href="{{ url('/api/deletBook/'.$sesion->id) }}" class="redButton">Eliminar</a> </td>
+<!-- jQuery -->
+<script src="{{ url('dashboard/plugins/jquery/jquery.min.js')}}"></script>
+<!-- Bootstrap 4 -->
+<script src="{{ url('dashboard/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<!-- AdminLTE App -->
+<script src="{{ url('dashboard/dist/js/adminlte.min.js') }}"></script>
 
-                  </tr>
-                  @endforeach
-                </table>
-              </div>
-      </div>
-    </body>
+
+</body>
 </html>

@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use App\userModel;
 use Illuminate\Http\Request;
 use DB;
+use Mail;
+use Illuminate\Contracts\Encryption\Encrypter;
+use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Support\Facades\Crypt;
+
 class userController extends Controller
 {
     /**
@@ -24,22 +29,38 @@ class userController extends Controller
      */
     public function create(Request $request)
     {
-       $credentials = $request->all();
-       $password = encrypt($request->contrasena);
 
-       $validate = DB::table('usuarios')->where('email', $request->email)->exists();
+       $credentials = $request->all();
+       $emailto = $request->email;
+       $randomPass = substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 8);
+       $password = Crypt::encryptString($randomPass);
+       $mensaje = "";
+
+       $validate = DB::table('usuarios')->where('email', $emailto)->exists();
        if ($validate) {
          $estatus = 0;
          $mensaje = "El correo ya se encuentra registrado";
+
        }else{
          $credentials['contrasena'] = $password;
          $event = userModel::create($credentials);
          $estatus = 1;
          $mensaje = "Se registro correctamente";
+
+         Mail::send(['html'=>'emailregistro'], ["email" => $emailto,"contrasena" => $randomPass], function($message) use ($emailto) {
+            $message->to($emailto)->subject('Activacion de Cuenta');
+            $message->from('comefaenl@gmail.com',"COMEFAENL");
+            });
+        $mail =Mail::failures();
        }
 
-      return response()->json(['estatus' => $estatus,
-                               'mensaje' => $mensaje],201);
+       $data = array();
+       $data['mensaje'] = $mensaje;
+       $data['estatus'] = $estatus;
+       echo json_encode($data);
+       //return response()->json(['mensaje'=>$mensaje,'estatus'=>$estatus],201);
+      //return View('nuevousuario',['mensaje'=>$mensaje,'estatus'=>$estatus]);
+      //return redirect()->action('userController@addUser', ['mensaje'=>$mensaje,'estatus'=>$estatus]);
 
     }
 
@@ -121,7 +142,48 @@ class userController extends Controller
           $event = DB::select('select * from usuarios where rol = ?',[$request->rol]);
       }
 
-      return response()->json(['usuarios' => $event],201);
+        return View('usuarios',compact('event'));
+        //return response()->json(['usuarios' => $event],201);
     }
+
+    public function addUser(){
+      return View('nuevousuario');
+    }
+
+  public function inicioSesion(Request $request){
+
+  try{
+    //$contra = Crypt::encryptString($request->contrasena);
+    $passUser = stripslashes(Crypt::decryptString($request->contrasena));
+  } catch (DecryptException $e) {
+    dd($e);
+  }
+
+    $event = DB::table('usuarios')->where('email',$request->email)->first();
+    //dd($event->email);
+    if ($event) {
+      $contraBD = Crypt::decryptString($event->contrasena);
+
+      if ($passUser == $contraBD) {
+        $usuario = $event;
+        $event = 1;
+        $mensaje = "Usuario encontrado";
+      }else{
+        $mensaje = "Los accesos son incorrectos";
+        $usuario = [];
+        $event = 0;
+      }
+    }else{
+      $mensaje = "El usuario no se encuentra registrado";
+      $usuario = [];
+      $event = 0;
+    }
+
+    return response()->json([
+      'estatus' => $event,
+      'usuario' => $usuario,
+      'mensaje' => $mensaje
+    ]);
+  }
 
 }

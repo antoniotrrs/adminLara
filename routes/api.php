@@ -41,3 +41,5 @@ Route::post('/createUser', 'userController@create');
 Route::post('/editUser','userController@update');
 Route::post('/usuarios','userController@getUsers');
 Route::post('/getuser','userController@showUser');
+Route::post('/nuevousuario','userController@create');
+Route::post('/inicioSesion','userController@inicioSesion');
