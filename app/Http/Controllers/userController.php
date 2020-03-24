@@ -9,6 +9,7 @@ use Mail;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\File;
 
 class userController extends Controller
 {
@@ -81,15 +82,11 @@ class userController extends Controller
      * @param  \App\userModel  $userModel
      * @return \Illuminate\Http\Response
      */
-    public function showUser(Request $request)
+    public function showUser($id)
     {
 
-      $event = DB::select('select * from usuarios where id = ?',[$request->id]);
-
-      return response()->json([
-        'usuario' => $event
-      ],201);
-
+      $event = DB::table('usuarios')->where('id',$id)->first();
+      return View('verusuario',['usuario'=>$event]);
     }
 
     /**
@@ -110,18 +107,29 @@ class userController extends Controller
      * @param  \App\userModel  $userModel
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, userModel $userModel)
+    public function update(Request $request)
     {
-        $event = DB::update('update usuarios set nombre = ?, apellidos = ?, curp = ?, celular = ?, gradoac = ? where id = ?',[$request->nombre,$request->apellidos,$request->curp,$request->celular,$request->gradoac,$request->id]);
-        if ($event) {
-          $mensaje = "Se actualizo la información correctamente";
-        }else{
-          $mensaje = "No se pudo actualizar la información";
-        }
 
-        return response()->json(['estatus' => $event,
-                                 'mensaje' => $mensaje],201);
 
+    }
+
+    public function acutalizarUsuario(Request $request){
+      //$request = $request->except(['contrasenaN','confirmarN','_token']);
+
+      $event = DB::update('update usuarios set nombre = ?, apellidoP = ?, apellidoM = ?, telefono = ?, grado = ?, certificacion = ?, cedulaGeneral
+       = ?, cedulaFamiliar = ?, trabajo = ?, trabajoPrivado = ?, infoPrivado = ?, curp = ?, celular = ?, rol = ? where id = ?',[$request->nombre,$request->apellidoP,$request->apellidoM,$request->telefono,$request->grado,$request->certificacion,$request->cedulaGeneral,$request->cedulaFamiliar,$request->trabajo,$request->trabajoPrivado,$request->infoPrivado,$request->curp,$request->celular,$request->rol,$request->idu]);
+
+      //$event = DB::table('usuarios')->where('id', $request->idu)->update($request->all());
+      if ($event) {
+        $estatus = 1;
+        $mensaje = "Se actualizo la información correctamente";
+      }else{
+        $estatus = 0;
+        $mensaje = "No se pudo actualizar la información";
+      }
+
+      //return response()->json(['estatus' => $event,'mensaje' => $mensaje],201);
+      echo json_encode(['estatus' => $estatus,'mensaje' => $mensaje]);
     }
 
     /**
@@ -141,7 +149,6 @@ class userController extends Controller
       }else{
           $event = DB::select('select * from usuarios where rol = ?',[$request->rol]);
       }
-
         return View('usuarios',compact('event'));
         //return response()->json(['usuarios' => $event],201);
     }
@@ -154,7 +161,7 @@ class userController extends Controller
 
   try{
     //$contra = Crypt::encryptString($request->contrasena);
-    $passUser = stripslashes(Crypt::decryptString($request->contrasena));
+    $passUser = stripslashes(Crypt::decrypt($request->contrasena));
   } catch (DecryptException $e) {
     dd($e);
   }
@@ -185,5 +192,65 @@ class userController extends Controller
       'mensaje' => $mensaje
     ]);
   }
+
+public function actPersonal (Request $request){
+
+  $completPath = null;
+  if ($request->imagen != "") {
+        $image = $request->imagen;  // your base64 encoded
+        $image = str_replace('data:image/png;base64,', '', $image);
+        $image = str_replace(' ', '+', $image);
+        $photoName = time().'.'.'jpg';
+    $completPath = 'images/'.$photoName;
+    //$request->img->move(public_path('images'), $photoName);
+    File::put(public_path('images'). '/' . $photoName, base64_decode($image));
+
+    }
+
+  try {
+      $userPersonal = DB::update('update usuarios set nombre = ?, apellidoP = ?, apellidoM = ?, curp = ?, telefono = ?, celular = ?, grado = ?, certificacion = ?, imagen = ? where id = ? ',[$request->nombre, $request->apellidoP, $request->apellidoM, $request->curp, $request->telefono, $request->celular, $request->grado, $request->certificacion, $completPath , $request->idu]);
+      $estatus = 1;
+      $mensaje = "Se actualizo la información correctamente";
+      $usuario = DB::table('usuarios')->where('id',$request->idu)->first();
+  } catch ( Illuminate\Database\QueryException $e) {
+      var_dump($e->errorInfo);
+      $estatus = 0;
+      $mensaje = "No se pudo actualizar la información";
+      $usuario = [];
+  }
+
+  return response()->json(['estatus' => $estatus,'mensaje' => $mensaje, 'usuario' => $usuario],201);
+
+}
+
+public function actLaboral (Request $request) {
+  try {
+      $userPersonal = DB::update('update usuarios set cedulaGeneral = ?, cedulaFamiliar = ?, trabajo = ?, privada = ?, trabajoPrivado = ?, infoPrivado = ?, promocion = ? where id = ? ',[$request->cedulaGeneral, $request->cedulaFamiliar, $request->trabajo, $request->privada, $request->trabajoPrivado, $request->infoPrivado, $request->promocion, $request->idu]);
+      $estatus = 1;
+      $mensaje = "Se actualizo la información correctamente";
+      $usuario = DB::table('usuarios')->where('id',$request->idu)->first();
+  } catch ( Illuminate\Database\QueryException $e) {
+      var_dump($e->errorInfo);
+      $estatus = 0;
+      $mensaje = "No se pudo actualizar la información";
+      $usuario = [];
+  }
+  return response()->json(['estatus' => $estatus,'mensaje' => $mensaje, 'usuario' => $usuario],201);
+}
+
+public function nuevaContrasena(Request $request){
+try {
+      $nuevacontra = Crypt::encryptString($request->contrasena);
+      $evet = DB::update('update usuarios set contrasena = ?, nuevo = 0 where id = ?',[$nuevacontra, $request->idu]);
+      $estatus = 1;
+      $mensaje = "Se actualizo la contraseña correctamente";
+    } catch ( Illuminate\Database\QueryException $e) {
+      var_dump($e->errorInfo);
+      $estatus = 0;
+      $mensaje = "No se pudo actualizar la contraseña";
+
+    }
+    return response()->json(['estatus' => $estatus,'mensaje' => $mensaje],201);
+}
 
 }

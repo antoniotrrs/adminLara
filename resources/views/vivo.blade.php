@@ -17,6 +17,21 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="{{url('/dashboard/dist/css/adminlte.min.css')}}">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  <!-- Toastr -->
+  <link rel="stylesheet" href="{{ url('dashboard/plugins/toastr/toastr.min.css') }}">
+<style>
+
+#labelswitch {
+  margin-right: 30px;
+}
+@media (max-width: 575.98px) {
+
+#labelswitch {
+  margin-right: 0px;
+}
+}
+
+</style>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -46,7 +61,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Usuarios</h1>
+            <h4 class="m-0 text-dark"></h4>
           </div><!-- /.col -->
 
         </div><!-- /.row -->
@@ -59,69 +74,37 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <div class="container-fluid">
         <div class="row">
 
-          <div class="col-lg-12">
-            <div class="card">
+          <!-- /.col-md-6 -->
+          <div class="col-md-5">
+
+
+            <div class="card card-info card-outline">
               <div class="card-header">
-                <h3 class="card-title">Miembros Registrados</h3>
+                <h5 class="card-title m-0">Iniciar Sesión en Vivo</h5>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  @if($live)
+                    <input value="{{$live->id}}" type="hidden" id="idu" >
+                    @else
+                    <input value="0" type="hidden" id="idu">
+                  @endif
+                  <div class="col-md-12"><label id="labelswitch" style="font-weight: 500;">Habilitar botón en la aplicación:  </label>
+                    @if($live)
+                    <input type="checkbox" name="my-checkbox"  id="livecheck" checked data-bootstrap-switch data-off-color="default" data-on-color="success">
+                    @else
+                    <input type="checkbox" name="my-checkbox" id="livecheck" data-bootstrap-switch data-off-color="default" data-on-color="success">
+                  @endif</div>
 
-                <div class="card-tools">
-                  <div class="input-group input-group-sm" style="width: 150px;">
-                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
-
-                    <div class="input-group-append">
-                      <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
-                    </div>
-                  </div>
                 </div>
               </div>
-              <!-- /.card-header -->
-              <div class="card-body table-responsive p-0" style="height: 450px;">
-                <table class="table table-head-fixed text-nowrap">
-                  <thead>
-                    <tr>
-                      <th>Nombre</th>
-                      <th>Correo</th>
-                      <th>Rol</th>
-
-
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @foreach($event as $user)
-                    <tr style="height:90px;">
-
-                        <td>{{$user->nombre}} {{$user->apellidoP}} {{$user->apellidoM}}</td>
-                        <td> {{$user->email}}</td>
-                        <td>@switch($user->rol)
-                              @case(1)
-                                  Administrador
-                                  @break
-                              @case(2)
-                                  Socio
-                                  @break
-                              @case(3)
-                                  Socio Activo
-                                  @break
-                              @case(4)
-                                  Medico residente
-                                  @break
-                              @case(5)
-                                  Invitado
-                                  @break
-                              @default
-                                  Usuario sin rol
-                          @endswitch</td>
-                        <td><a class="btn btn-warning btn-block" href="{{url('/usuario/'.$user->id)}}">Ver</a> </td>
-
-                    </tr>
-                    @endforeach
-                  </tbody>
-                </table>
-              </div>
-              <!-- /.card-body -->
             </div>
-            <!-- /.card -->
           </div>
+          <!-- /.col-md-3 -->
+
+
+
+
         </div>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -129,7 +112,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
-
 
   <!-- Main Footer -->
   <footer class="main-footer">
@@ -143,7 +125,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 </div>
 <!-- ./wrapper -->
 
-<!-- REQUIRED SCRIPTS -->
+
 
 <!-- jQuery -->
 <script src="{{ url('dashboard/plugins/jquery/jquery.min.js')}}"></script>
@@ -151,5 +133,54 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="{{ url('dashboard/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ url('dashboard/dist/js/adminlte.min.js') }}"></script>
+<!-- Toastr -->
+<script src="{{ url('dashboard/plugins/toastr/toastr.min.js') }}"></script>
+<!-- Bootstrap Switch -->
+<script src="{{ url('dashboard/plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
+
+<script type="text/javascript">
+
+  $(function() {
+
+
+    $("input[data-bootstrap-switch]").each(function(){
+
+      $(this).bootstrapSwitch('state', $(this).prop('checked'));
+
+    });
+
+  $('#livecheck').on('switchChange.bootstrapSwitch', function (event, state) {
+
+      if (state) {
+        var online = 1;
+      }else{
+        var online = 0;
+      }
+
+      var urll = "{{url('/api/iniciarlive')}}";
+      var idu = $("#idu").val();
+
+      $.ajax({
+        method: 'POST',
+        url: urll,
+        data: {
+            'online': online,
+            'idu' : idu,
+        },
+        dataType: 'json',
+        success: function(data){
+            console.log(data);
+        }
+    });
+  });
+
+
+
+
+
+});
+
+</script>
+
 </body>
 </html>

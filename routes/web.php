@@ -32,7 +32,8 @@ Route::post('/login',function (Request $request){
 
     if ($request->pass == $contraBD) {
       $_SESSION['token'] = Crypt::encryptString($event->id);
-      $_SESSION['name'] = $event->nombre." ".$event->apellidos;
+      $_SESSION['name'] = $event->nombre." ".$event->apellidoP;
+      $_SESSION['img'] =  ($event->imagen != NULL ? $event->imagen : "");
 
       $event = 1;
       $mensaje = "Usuario encontrado";
@@ -67,6 +68,8 @@ Route::get('/allevents', 'eventosController@showallEvents')->name('allevents')->
 Route::get('/sesiones', 'sesionesController@todasSesiones')->name('allSesions')->middleware('webuser');
 Route::get('/actividades', 'actividadesController@todasactividades')->name('allActivi')->middleware('webuser');
 Route::get('/biblioteca','bibliotecaController@todosLibros')->name('allBiblio')->middleware('webuser');
-Route::get('usuarios','userController@getUsers')->name('allUsers')->middleware('webuser');
+Route::get('/usuarios','userController@getUsers')->name('allUsers')->middleware('webuser');
 Route::get('/editarsesion/{id}','sesionesController@editarSesion')->name('editarSesion')->middleware('webuser');
 Route::get('/usuarionuevo','userController@addUser')->name('usuarionuevo')->middleware('webuser');
+Route::get('/usuario/{id}','userController@showUser')->name('verusuario')->middleware('webuser');
+Route::get('/sesionlive','sesionController@view')->name('live')->middleware('webuser');

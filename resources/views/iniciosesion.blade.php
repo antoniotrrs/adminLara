@@ -74,6 +74,7 @@
 
   $(function() {
 
+var diretsion = "{{ url('/allevents') }}";
       $('#form').submit(function(event){
         $( "#btnSesion" ).prop( "disabled", true );
         $.ajax({
@@ -87,7 +88,7 @@
           if (data.estatus == 0) {
             toastr.error(data.mensaje);
           }else{
-            window.location = "/allevents"
+            window.location = diretsion;
           }
 
                 // here we will handle errors and validation messages

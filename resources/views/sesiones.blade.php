@@ -129,7 +129,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <td><p class="text-wrap" style="width:300px;">{{$sesion->ponente}}</p></td>
                         <td><a href="{{$sesion->video}}" target="_blank">{{$sesion->video}}</a></td>
                         <td><a href="{{$sesion->pdf}}" target="_blank">{{$sesion->pdf}}</a></td>
-                        <td > <ul style="padding: 0; list-style: none; margin: 0px;"><li style="margin-bottom:10px;"><a class="btn btn-warning" href="{{ url('/editarsesion/'.$sesion->id) }}">Editar</a></li><li><a class="btn btn-danger" href="{{ url('/api/deleteSesion/'.$sesion->id) }}">Eliminar</a></li></ul> </td>
+                        <td > <ul style="padding: 0; list-style: none; margin: 0px;"><li style="margin-bottom:10px;"><a class="btn btn-warning btn-block" href="{{ url('/editarsesion/'.$sesion->id) }}">Editar</a></li><li><a class="btn btn-danger btn-block" href="{{ url('/api/deleteSesion/'.$sesion->id) }}">Eliminar</a></li></ul> </td>
 
                     </tr>
                     @endforeach

@@ -57,6 +57,10 @@ class eventosController extends Controller
                                 //'mensaje' => 'Se creo con exito.'],201);
     }
 
+    public function subirimagen(Request $request){
+      
+    }
+
 
 public function showhome(){
   return View('iniciosesion');
