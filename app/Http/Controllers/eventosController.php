@@ -18,12 +18,12 @@ class eventosController extends Controller
         $events = DB::select('select activo,created_at,detalle,DATE_FORMAT(fecha,"%d-%m-%Y") as fecha, hora,id,img,lugar,titulo,updated_at from eventos where activo = 1 and fecha >= CURDATE() order by fecha ASC');
         for ($i=0; $i < sizeof($events) ; $i++) {
           $result = explode('-',$events[$i]->fecha);
-          $num = $events[$i]->hora;
+          /*$num = $events[$i]->hora;
           if (intVal($num) >= 12) {
             $events[$i]->hora = (intVal($num)-12).' P.M.';
           }else{
             $events[$i]->hora = $num.' A.M.';
-          }
+          }*/
 
           $events[$i]->fecha = $result[0].'-'.$mesesN[intVal($result[1])].'-'.$result[2];
         }
@@ -58,7 +58,7 @@ class eventosController extends Controller
     }
 
     public function subirimagen(Request $request){
-      
+
     }
 
 
@@ -91,24 +91,24 @@ public function showhome(){
       $events = DB::select('select activo,created_at,detalle,DATE_FORMAT(fecha,"%d-%m-%Y") as fecha, hora,id,img,lugar,titulo,updated_at from eventos where activo = 1 and fecha >= CURDATE() order by fecha ASC , hora ASC limit 1');
       for ($i=0; $i < sizeof($events) ; $i++) {
         $result = explode('-',$events[$i]->fecha);
-        $num = $events[$i]->hora;
+        /*$num = $events[$i]->hora;
         if (intVal($num) >= 12) {
           $events[$i]->hora = (intVal($num)-12).' P.M.';
         }else{
           $events[$i]->hora = $num.' A.M.';
-        }
+        }*/
 
         $events[$i]->fecha = $result[0].' - '.$mesesN[intVal($result[1])].' - '.$result[2];
       }
       $activ  = DB::select('select activo,created_at,detalle,DATE_FORMAT(fechalimite,"%d-%m-%Y") as fechalimite,hora,id,imagen,link,titulo from actividades where activo = 1 and fechalimite >= CURDATE() order by fechalimite ASC , hora ASC limit 1');
       for ($i=0; $i < sizeof($activ) ; $i++) {
         $result = explode('-',$activ[$i]->fechalimite);
-        $num = $activ[$i]->hora;
+        /*$num = $activ[$i]->hora;
         if (intVal($num) >= 12) {
           $activ[$i]->hora = (intVal($num)-12).' P.M.';
         }else{
           $activ[$i]->hora = $num.' A.M.';
-        }
+        }*/
         $activ[$i]->fechalimite = $result[0].' - '.$mesesN[intVal($result[1])].' - '.$result[2];
       }
       $sesion = DB::select('select * from sesiones where activo = 1 and YEAR(created_at) = "'.$yr.'" and mes = "'.$mt.'"');

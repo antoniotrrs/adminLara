@@ -37,22 +37,28 @@ class sesionController extends Controller
   public function tomarasistencia(Request $request){
     $sesion = DB::table('envivo')->where('online',1)->first();
 
-    $exist = DB::table('asistencias')->where(['idsesion' => $sesion->id, 'idusuario' => $request->idu])->first();
+if ($sesion) {
+  $exist = DB::table('asistencias')->where(['idsesion' => $sesion->id, 'idusuario' => $request->idu])->first();
 
-if ($exist) {
-  $estatus = 1;
-  $mensaje = "Su asistencia ya ha sido registrada en esta sesión";
+  if ($exist) {
+    $estatus = 1;
+    $mensaje = "Su asistencia ya ha sido registrada en esta sesión";
+  }else{
+    $asisten = DB::table('asistencias')->insertGetId(['idsesion' => $sesion->id, 'idusuario' => $request->idu,'created_at' => date('Y-m-d H:i:s') , 'updated_at' => date('Y-m-d H:i:s')]);
+
+      if ($asisten) {
+        $estatus = 1;
+        $mensaje = "Su asistencia se marcó correctamente.";
+      }else{
+        $estatus = 0;
+        $mensaje = "No fue posible marcar su asistencia a esta sesión";
+      }
+  }
 }else{
-  $asisten = DB::table('asistencias')->insertGetId(['idsesion' => $sesion->id, 'idusuario' => $request->idu,'created_at' => date('Y-m-d H:i:s') , 'updated_at' => date('Y-m-d H:i:s')]);
-
-    if ($asisten) {
-      $estatus = 1;
-      $mensaje = "Su asistencia se marcó correctamente.";
-    }else{
-      $estatus = 0;
-      $mensaje = "No fue posible marcar su asistencia a esta sesión";
-    }
+  $estatus = 2;
+  $mensaje = "No existe una sesión activa";
 }
+
 
     return response()->json(['estatus' => $estatus,'mensaje' => $mensaje],201);
 

@@ -118,10 +118,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   </select>
                 </div>
                 <div class="form-group">
-                  <input type="text" class="form-control" name="contrasenaN" placeholder="Nueva Contraseña" value="">
+                  <input type="text" class="form-control" name="contrasenaN" id="contrasenaN" placeholder="Nueva Contraseña" value="">
                 </div>
                 <div class="form-group">
-                  <input type="text" class="form-control" name="confirmarN" placeholder="Confirmar Contraseña" value="">
+                  <input type="text" class="form-control" name="confirmarN" id="confirmarN" placeholder="Confirmar Contraseña" value="">
                 </div>
               </div>
             </div>
@@ -223,6 +223,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
       $('#form').submit(function(event){
         $( "#btnEditar" ).prop( "disabled", true );
+
+
+        if($("#contrasenaN").val() != " " ){
+          if ($("#contrasenaN").val() != $("#confirmarN").val()) {
+            toastr.error("Las contraseñas no coinciden");
+            $( "#btnEditar" ).prop( "disabled", false );
+            return false;
+          }
+        }
+
         $.ajax({
           url: $('#form').attr('action'),
           type: 'POST',

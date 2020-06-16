@@ -114,19 +114,22 @@ class userController extends Controller
     }
 
     public function acutalizarUsuario(Request $request){
-      //$request = $request->except(['contrasenaN','confirmarN','_token']);
+
+      if(isset($request->contrasenaN)){
+
+        $nuevacontra = Crypt::encryptString($request->contrasenaN);
+        $evet = DB::update('update usuarios set contrasena = ?, nuevo = 0 where id = ?',[$nuevacontra, $request->idu]);
+
+      }
 
       $event = DB::update('update usuarios set nombre = ?, apellidoP = ?, apellidoM = ?, telefono = ?, grado = ?, certificacion = ?, cedulaGeneral
        = ?, cedulaFamiliar = ?, trabajo = ?, trabajoPrivado = ?, infoPrivado = ?, curp = ?, celular = ?, rol = ? where id = ?',[$request->nombre,$request->apellidoP,$request->apellidoM,$request->telefono,$request->grado,$request->certificacion,$request->cedulaGeneral,$request->cedulaFamiliar,$request->trabajo,$request->trabajoPrivado,$request->infoPrivado,$request->curp,$request->celular,$request->rol,$request->idu]);
 
       //$event = DB::table('usuarios')->where('id', $request->idu)->update($request->all());
-      if ($event) {
+
         $estatus = 1;
         $mensaje = "Se actualizo la información correctamente";
-      }else{
-        $estatus = 0;
-        $mensaje = "No se pudo actualizar la información";
-      }
+
 
       //return response()->json(['estatus' => $event,'mensaje' => $mensaje],201);
       echo json_encode(['estatus' => $estatus,'mensaje' => $mensaje]);
@@ -159,9 +162,15 @@ class userController extends Controller
 
   public function inicioSesion(Request $request){
 
+
   try{
-    //$contra = Crypt::encryptString($request->contrasena);
-    $passUser = stripslashes(Crypt::decrypt($request->contrasena));
+
+    if ($request->sistema == 'iOS') {
+      $passUser = stripslashes(Crypt::decrypt($request->contrasena));
+    }else{
+      $passUser = stripslashes(Crypt::decryptString($request->contrasena));
+    }
+
   } catch (DecryptException $e) {
     dd($e);
   }
