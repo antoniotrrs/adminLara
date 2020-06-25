@@ -17,6 +17,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="{{url('/dashboard/dist/css/adminlte.min.css')}}">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  <!-- Toastr -->
+  <link rel="stylesheet" href="{{url('dashboard/plugins/toastr/toastr.min.css')}}">
   <!-- DataTables -->
   <link rel="stylesheet" href="{{url('dashboard/plugins/datatables-bs4/css/dataTables.bootstrap4.css')}}">
 </head>
@@ -48,7 +50,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Usuarios Registrados</h1>
+            <h1 class="m-0 text-dark">Asistencias de sesiones en vivo</h1>
           </div><!-- /.col -->
 
         </div><!-- /.row -->
@@ -61,60 +63,56 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <div class="container-fluid">
         <div class="row">
 
-          <div class="col-lg-12">
-            <div class="card" style="padding:1rem;">
+          <div class="col-md-6">
+            Selecciona una sesión para ver las asistencias.
+            <div class="form-group">
 
-              <!-- /.card-header -->
-              <div class="card-body table-responsive p-0" >
-                <table class="table table-head-fixed text-nowrap" id="tablausu">
-                  <thead>
-                    <tr>
-                      <th>Nombre</th>
-                      <th>Correo</th>
-                      <th>Rol</th>
-                      <th></th>
-
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @foreach($event as $user)
-                    <tr>
-
-                        <td>{{$user->nombre}} {{$user->apellidoP}} {{$user->apellidoM}}</td>
-                        <td> {{$user->email}}</td>
-                        <td>@switch($user->rol)
-                              @case(1)
-                                  Administrador
-                                  @break
-                              @case(2)
-                                  Socio
-                                  @break
-                              @case(3)
-                                  Socio Activo
-                                  @break
-                              @case(4)
-                                  Medico residente
-                                  @break
-                              @case(5)
-                                  Invitado
-                                  @break
-                              @default
-                                  Usuario sin rol
-                          @endswitch</td>
-                        <td><a class="btn btn-warning btn-block" href="{{url('/usuario/'.$user->id)}}">Ver</a> </td>
-
-                    </tr>
-                    @endforeach
-                  </tbody>
-                </table>
-              </div>
-              <!-- /.card-body -->
+              <select class="form-control" id="selectsesion">
+                <option value="0">Selecciona una opción</option>
+                @foreach($sesiones as $sesion)
+                <option value="{{$sesion->id}}">{{$sesion->fecha_inicio}}</option>
+                @endforeach
+              </select>
             </div>
             <!-- /.card -->
           </div>
         </div>
         <!-- /.row -->
+
+<div class="row">
+  <div class="card">
+
+    <!-- /.card-header -->
+    <div class="card-body p-0">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th style="width: 10px">#</th>
+            <th>Nombre</th>
+            <th>Correo</th>
+          </tr>
+        </thead>
+        <tbody id="tableasis">
+          <!--<tr>
+            <td>1.</td>
+            <td>Update software</td>
+            <td>
+
+            </td>
+          </tr>-->
+
+        </tbody>
+      </table>
+    </div>
+    <!-- /.card-body -->
+  </div>
+  <!-- /.card -->
+</div>
+
       </div><!-- /.container-fluid -->
+
+
+
     </div>
     <!-- /.content -->
   </div>
@@ -141,26 +139,50 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="{{ url('dashboard/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ url('dashboard/dist/js/adminlte.min.js') }}"></script>
+<script src="{{ url('dashboard/plugins/toastr/toastr.min.js') }}"></script>
 <script src="{{url('dashboard/plugins/datatables/jquery.dataTables.js')}}"></script>
 <script src="{{url('dashboard/plugins/datatables-bs4/js/dataTables.bootstrap4.js')}}"></script>
 
-<script>
+<script type="text/javascript">
+
+$(function () {
 
 
-$(function() {
 
-
-$("#tablausu").DataTable({
-  "paging": true,
-  "lengthChange": false,
-  "searching": true,
-  "ordering": false,
-  "info": false,
-  "autoWidth": true,
-});
+  $("#table1").DataTable({
+    "paging": false,
+    "lengthChange": false,
+    "searching": true,
+    "ordering": false,
+    "info": false,
+    "autoWidth": false,
+  });
 
 $(".dataTables_filter label").contents().eq(0).replaceWith('Buscar:');
+
+  $("#selectsesion").change(function () {
+
+      var select = $(this);
+      var idses = select.val();
+
+      $.ajax({
+        url:'{{url("api/asisvivo")}}',
+        type:'POST',
+        data:{
+          'idses':idses,
+        },
+        dataType: 'json',
+      }).done(function(data){
+        var html = data.tabla;
+        $('#tableasis').replaceWith(html);
+
+      });
+
+  });
+
+
 });
+
 </script>
 </body>
 </html>

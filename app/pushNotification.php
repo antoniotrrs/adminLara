@@ -19,7 +19,11 @@ private static $API_ACCESS_KEY;
 	}
 
 
-	public function sendNotification($titulo,$mensaje) {
+	public function sendNotification($titulo,$mensaje,$usuarios) {
+
+
+		$usus = json_decode($usuarios);
+
 
 
 
@@ -37,14 +41,20 @@ private static $API_ACCESS_KEY;
 
 	        ];
 
+				 if(empty($usus)){
 
-	       // $extra = array_merge($extra, ['notify_title' => $title, 'notify_text' => $text]);
-
-	        $fields = [
-	            //'to' => 'eWxP75RXN0I:APA91bGGgkLNA24b2-UvCUSN-YUBZfF04cBQ775cQtCQijRTG6kkg8XUbtHMRJs0BiIZKAV4alUu8jDvPsZ6_Y-e7RU1RrHO2bX8k0v08NkWghd1jaEqv89fa1hUtiq6NYqGcd2VaBzk',
-              'to' => '/topics/general',
+					$fields = [
+	            //'to' => 'dBrkV42xKSw:APA91bHAPxN1zBfVTJIxQ5uNNM3oC9HFfcterDgDzeWrdgCOO_F-YU9nWL-JWdusVEu7H_jcrGTZ4f34U4vOP7oofK7AwLHEuAy4VDtM9AIN_U-udwLTW_Dl3D_0duCE4eWP-Zq5heK3',
+              'to' => "/topics/test",
 	            'notification' => $notification
 	        ];
+				}else{
+					$fields = [
+	            //'to' => 'dBrkV42xKSw:APA91bHAPxN1zBfVTJIxQ5uNNM3oC9HFfcterDgDzeWrdgCOO_F-YU9nWL-JWdusVEu7H_jcrGTZ4f34U4vOP7oofK7AwLHEuAy4VDtM9AIN_U-udwLTW_Dl3D_0duCE4eWP-Zq5heK3',
+              'registration_ids' => $usus,
+	            'notification' => $notification
+	        ];
+				}
 
 	    	return $this->useCurl($url, $headers, $fields);
 
@@ -93,19 +103,12 @@ private static $API_ACCESS_KEY;
 	            // Close connection
 	            curl_close($ch);
 				$valid = json_decode($result, true);
-        //dd($valid);
-				if($valid['message_id']==0){
-					return false;
-				}else{
-					return true;
-				}
-        	}
-        	else{
+        return true;
+        	}else{
         		return false;
         	}
 
-        }
-        else{
+        }else{
 
 			$client = new \GuzzleHttp\Client();
 			$result = false;

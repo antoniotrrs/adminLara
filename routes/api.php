@@ -51,3 +51,7 @@ Route::post('/actualizarcontra','userController@nuevaContrasena');
 Route::post('/iniciarlive','sesionController@iniciardetenerlive');
 Route::post('/habilitarsesion','sesionController@habilitarbttn');
 Route::post('/tomarasistencia','sesionController@tomarasistencia');
+
+Route::post('/subirexcel','userController@addexcel');
+Route::post('/sendnoti','eventosController@enviarnotificacion');
+Route::post('/asisvivo','envivoController@miembrosasistentes');

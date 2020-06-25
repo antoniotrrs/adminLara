@@ -10,6 +10,8 @@ use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\File;
+use App\Imports\userImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class userController extends Controller
 {
@@ -122,8 +124,34 @@ class userController extends Controller
 
       }
 
+      if(isset($request->dig_tit_medgen)){
+        $tit_medgen = 1;
+      }else{
+        $tit_medgen = 0;
+      }
+      if(isset($request->dig_ced_medgen)){
+        $ced_medgen = 1;
+      }else{
+        $ced_medgen = 0;
+      }
+      if(isset($request->dig_tit_medfam)){
+        $tit_medfam = 1;
+      }else{
+        $tit_medfam = 0;
+      }
+      if(isset($request->dig_ced_medfam)){
+        $ced_medfam = 1;
+      }else{
+        $ced_medfam = 0;
+      }
+      if(isset($request->dig_ife)){
+        $tit_ife = 1;
+      }else{
+        $tit_ife = 0;
+      }
+
       $event = DB::update('update usuarios set nombre = ?, apellidoP = ?, apellidoM = ?, telefono = ?, grado = ?, certificacion = ?, cedulaGeneral
-       = ?, cedulaFamiliar = ?, trabajo = ?, trabajoPrivado = ?, infoPrivado = ?, curp = ?, celular = ?, rol = ? where id = ?',[$request->nombre,$request->apellidoP,$request->apellidoM,$request->telefono,$request->grado,$request->certificacion,$request->cedulaGeneral,$request->cedulaFamiliar,$request->trabajo,$request->trabajoPrivado,$request->infoPrivado,$request->curp,$request->celular,$request->rol,$request->idu]);
+       = ?, cedulaFamiliar = ?, trabajo = ?, trabajoPrivado = ?, infoPrivado = ?, curp = ?, celular = ?, rol = ?, numSocio = ?, dig_tit_medgen = ?, dig_ced_medgen = ?, dig_tit_medfam = ?, dig_ced_medfam = ?, dig_ife = ? where id = ?',[$request->nombre,$request->apellidoP,$request->apellidoM,$request->telefono,$request->grado,$request->certificacion,$request->cedulaGeneral,$request->cedulaFamiliar,$request->trabajo,$request->trabajoPrivado,$request->infoPrivado,$request->curp,$request->celular,$request->rol,$request->numSocio,$tit_medgen,$ced_medgen,$tit_medfam,$ced_medfam,$tit_ife,$request->idu]);
 
       //$event = DB::table('usuarios')->where('id', $request->idu)->update($request->all());
 
@@ -181,6 +209,8 @@ class userController extends Controller
       $contraBD = Crypt::decryptString($event->contrasena);
 
       if ($passUser == $contraBD) {
+        $tokenf = $request->tokenfire;
+        DB::update('update usuarios set firetoken = ? where id = ?',[$tokenf,$event->id]);
         $usuario = $event;
         $event = 1;
         $mensaje = "Usuario encontrado";
@@ -261,5 +291,35 @@ try {
     }
     return response()->json(['estatus' => $estatus,'mensaje' => $mensaje],201);
 }
+
+  public function addexcel(Request $request){
+
+    $file = $request->filexcel;
+    try {
+    Excel::import(new userImport, $file);
+    $estatus = 1;
+    $mensaje = "Se cargaron los usuarios con éxito";
+  } catch ( Illuminate\Database\QueryException $e) {
+    var_dump($e->errorInfo);
+    $estatus = 0;
+    $mensaje = "No se pudo actualizar la contraseña";
+
+  }
+
+  $data = array();
+  $data['mensaje'] = $mensaje;
+  $data['estatus'] = $estatus;
+  echo json_encode($data);
+
+
+  }
+
+  public function viewnotifica(){
+
+    $event = DB::select('select id, email, nombre, apellidoP, apellidoM, firetoken from usuarios where firetoken <> " " AND usr_show = 1');
+
+
+    return View('notifica',['usuarios'=>$event]);
+  }
 
 }

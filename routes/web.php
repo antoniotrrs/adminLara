@@ -73,3 +73,5 @@ Route::get('/editarsesion/{id}','sesionesController@editarSesion')->name('editar
 Route::get('/usuarionuevo','userController@addUser')->name('usuarionuevo')->middleware('webuser');
 Route::get('/usuario/{id}','userController@showUser')->name('verusuario')->middleware('webuser');
 Route::get('/sesionlive','sesionController@view')->name('live')->middleware('webuser');
+Route::get('/notificacion','userController@viewnotifica')->name('notifica')->middleware('webuser');
+Route::get('/asistencia','envivoController@abrirAsis')->name('asistencias')->middleware('webuser');

@@ -73,8 +73,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <div class="card-body">
 
                   <input type="text" name="idu" value="{{ $usuario->id }}" style="display: none;">
+
                   <div class="form-group">
                     <center><img src="{{ url('dashboard/dist/img/avatar5.png') }}" style="width: 150px;" class="img-circle elevation-2" alt="User Image"></center>
+                  </div>
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-md-6">Número de Socio</div><div class="col-md-6"> <input type="text" class="form-control" name="numSocio" placeholder="" value="{{$usuario->numSocio}}"></div></div>
                   </div>
                   <div class="form-group">
                     <input type="text" class="form-control" name="nombre" placeholder="Nombre" value="{{$usuario->nombre}}">
@@ -173,6 +178,26 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <textarea class="form-control" rows="3" name="infoPrivado" placeholder="Información de Practica Privada">{{$usuario->infoPrivado}}</textarea>
                 </div>
 
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" id="dig_tit_medgen" name="dig_tit_medgen" <?php if($usuario->dig_tit_medgen == 1) {?> checked <?php }?>>
+                  <label class="form-check-label" for="exampleCheck1">Título de Médicina General</label>
+                </div>
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" id="dig_ced_medgen" name="dig_ced_medgen" <?php if($usuario->dig_ced_medgen == 1) {?> checked <?php }?>>
+                  <label class="form-check-label" for="exampleCheck1">Cédula de Médico General</label>
+                </div>
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" id="dig_tit_medfam" name="dig_tit_medfam" <?php if($usuario->dig_tit_medfam == 1) {?> checked <?php }?>>
+                  <label class="form-check-label" for="exampleCheck1">Título de Médicina Familiar</label>
+                </div>
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" id="dig_ced_medfam" name="dig_ced_medfam" <?php if($usuario->dig_ced_medfam == 1) {?> checked <?php }?>>
+                  <label class="form-check-label" for="exampleCheck1">Cédula de Médico Familiar</label>
+                </div>
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" id="dig_ife" name="dig_ife" <?php if($usuario->dig_ife == 1) {?> checked <?php }?>>
+                  <label class="form-check-label" for="exampleCheck1">Identificación Oficial (IFE)</label>
+                </div>
               </div>
             </div>
 
@@ -182,6 +207,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
           </div>
           <!-- /.col-md-3 -->
+
 
 
 

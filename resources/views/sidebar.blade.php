@@ -35,6 +35,14 @@
            </p>
          </a>
        </li>
+       <li class="nav-item">
+         <a href="{{ url('/asistencia') }}" class="nav-link">
+           <i class="nav-icon fas fa-check"></i>
+           <p>
+             Asistencias
+           </p>
+         </a>
+       </li>
 
       <li class="nav-item">
         <a href="{{ url('/') }}" class="nav-link">
@@ -85,7 +93,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{{url('/')}}" class="nav-link">
+            <a href="{{url('/notificacion')}}" class="nav-link">
               <i class="fas fa-bell nav-icon"></i>
               <p>Notificaciones</p>
             </a>

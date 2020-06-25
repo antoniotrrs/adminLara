@@ -93,6 +93,32 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
           </div>
           <!-- /.col-md-6 -->
+
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="m-0">Excel</h5>
+              </div>
+              <div class="card-body">
+
+                <p class="card-text" style="font-size:14px;">Registre usuarios por medio de un archivo excel (.xlsx)</p><p class="card-text" style="font-size:14px;"> Los usuarios recibirán un email con su usuario y contraseña para ingresar a la aplicación y completar el registro.</p>
+
+                <div class="form-group">
+                  <!-- <label for="customFile">Custom File</label> -->
+
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="customFile">
+                    <label class="custom-file-label" for="customFile">Choose file</label>
+                  </div>
+                </div>
+                <input type="button" class="btn btn-info float-right" id="btnExcel" value="Registrar">
+
+
+              </div>
+            </div>
+
+
+          </div>
         </div>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -124,10 +150,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="{{ url('dashboard/dist/js/adminlte.min.js') }}"></script>
 <!-- Toastr -->
 <script src="{{ url('dashboard/plugins/toastr/toastr.min.js') }}"></script>
+<!-- bs-custom-file-input -->
+<script src="{{ url('dashboard/plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
 
 <script type="text/javascript">
 
   $(function() {
+    bsCustomFileInput.init();
 
       $('#form').submit(function(event){
         $( "#btnRegistro" ).prop( "disabled", true );
@@ -148,6 +177,39 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 // here we will handle errors and validation messages
       });
         event.preventDefault();
+    });
+
+
+    $("#btnExcel").click(function () {
+
+      var file_data = $('#customFile').prop('files')[0];
+
+
+      if (!file_data) {
+        toastr.error("Seleccione un archivo Excel para subir");
+      }
+
+      var form_data = new FormData();
+
+      form_data.append('filexcel', file_data);
+
+      $.ajax({
+          url:"{{ url('/api/subirexcel') }}",
+          type:'POST',
+          data: form_data,
+          processData: false,
+          contentType: false,
+          dataType    : 'json',
+        }).done(function(data) {
+          if (data.estatus == 0) {
+            toastr.error(data.mensaje);
+          }else{
+            toastr.success(data.mensaje);
+          }
+        });
+
+
+
     });
 
 

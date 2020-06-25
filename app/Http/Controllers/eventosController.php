@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\eventosModel;
 use DB;
 use App\pushNotification;
+Use Exception;
 
 
 class eventosController extends Controller
@@ -120,4 +121,31 @@ public function showhome(){
                               'sesiones' => sizeof($sesion)>0 ? $sesion[0] : null],201);
     }
 
+
+
+    public function enviarnotificacion(Request $request){
+
+      $titNot = $request->titulo;
+      $mensajeNot = $request->mensaje;
+      $users = $request->usuarios;
+
+      try{
+
+        $sendpush =  new pushNotification;
+        $sendpush->sendNotification($titNot,$mensajeNot,$users);
+
+        $mensaje = "Se envio con éxito la notificación";
+        $estatus = 1;
+      }catch(Exception $e){
+        error_log($e->getMessage());
+        $mensaje = "No se pudo enviar la notificación";
+        $estatus = 0;
+     //dd($e->getMessage());
+      }
+
+      $response['mensaje'] = $mensaje;
+      $response['estatus'] = $estatus;
+
+      echo json_encode($response);
+    }
 }
